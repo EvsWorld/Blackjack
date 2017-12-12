@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="dummy"></div>
+
+
+  <script>
+    "use strict";  
+  
+    // Make your card constructor again here, but make sure to use private
+    // variables!
+    function Card(n, s) {
+      var number = n;
+      var suit = s;
+      //getters
+      this.getNumber = function() {
+        return this.number;
+      };
+      this.getSuit = function() {
+        return this.suit;
+      };
+      this.getValue = function() {
+        if (this.number === 11 || this.number === 12 || this.number === 0) {
+          return 10;
+        } else if (this.number === 1) {
+          return 11;
+        } else {
+          return number;
+        }
+      };
+    }
+
+    // Make a deal function here.  It should return a new card with a suit
+    // that is a random number from 1 to 4, and a number that is a random
+    // number between 1 and 13
+    var deal = function() {
+      var randNum = Math.floor(Math.random() * 13) + 1;
+      var randSuit = Math.floor(Math.random() * 4) + 1;
+      //the card
+      return new Card(randNum, randSuit).getValue();
+    };
+
+    // examples of the deal function in action
+    var card1 = deal();
+    var card2 = deal();
+
+    function Hand() {
+      this.card1 = deal();
+      this.card2 = deal();
+      this.card3 = deal();
+      this.card4 = deal();
+      this.card5 = deal();
+      this.deal = function() {
+        return deal();
+      };
+      
+      var score = this.card1 + this.card2;
+      this.Add = function() {
+         score += deal(); 
+       };
+      this.getScore = function() {
+        return score;
+      };   
+      }
+  
+
+    var myHand = new Hand();
+    var yourHand = new Hand();
+
+    console.log("I scored a " + myHand.getScore() + " and you scored a " + yourHand.getScore());
+    console.log("I scored a " + myHand.getScore() + " and you scored a " + yourHand.getScore());
+    
+    
+    console.log(myHand);
+
+    {
+      let myTurn = true;
+      let myScore = 0;
+      let yourScore = 0;
+      
+      for (let i = 0; i < 6; i++) {
+        myScore += myHand.score();
+        yourScore += yourHand.score();
+        console.log("I scored a " + myScore + " and you scored a " + yourScore);
+        if ( myTurn === true ) {
+          var playerResponse = prompt("Press 'h' to hit or 's' to stand.");
+          
+          document.getElementById("dummy").innerHTML = "you said " + playerResponse;
+        }
+      }
+    
+    
+    }
+  </script>
+
+
+
+</body>
+
+</html>
