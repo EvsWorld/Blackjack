@@ -45,7 +45,7 @@
       var randNum = Math.floor(Math.random() * 13) + 1;
       var randSuit = Math.floor(Math.random() * 4) + 1;
       //the card
-      return new Card(randNum, randSuit).getValue();
+      return new Card(randNum, randSuit);
     };
 
     // examples of the deal function in action
@@ -53,52 +53,66 @@
     var card2 = deal();
 
     function Hand() {
+      var score = deal().getValue();
       this.card1 = deal();
       this.card2 = deal();
       this.card3 = deal();
       this.card4 = deal();
       this.card5 = deal();
-      this.deal = function() {
-        return deal();
-      };
-      
-      var score = this.card1 + this.card2;
-      this.Add = function() {
-         score += deal(); 
+      this.hit = function() {
+         score += deal().getValue(); 
        };
       this.getScore = function() {
         return score;
       };   
       }
-  
-
-    var myHand = new Hand();
-    var yourHand = new Hand();
-
-    console.log("I scored a " + myHand.getScore() + " and you scored a " + yourHand.getScore());
-    console.log("I scored a " + myHand.getScore() + " and you scored a " + yourHand.getScore());
     
-    
-    console.log(myHand);
-
-    {
-      let myTurn = true;
-      let myScore = 0;
-      let yourScore = 0;
       
-      for (let i = 0; i < 6; i++) {
-        myScore += myHand.score();
-        yourScore += yourHand.score();
-        console.log("I scored a " + myScore + " and you scored a " + yourScore);
-        if ( myTurn === true ) {
-          var playerResponse = prompt("Press 'h' to hit or 's' to stand.");
-          
-          document.getElementById("dummy").innerHTML = "you said " + playerResponse;
+      function checkForWinner() {
+        if (myHand.getScore() === 21 | dealerHand.getScore() > 21) {
+          console.log( "I won. My score is " + myHand.getScore() + " and the dealer's score is " + dealerHand.getScore());
+          return false;
+        } else if ( dealerHand.getScore() === 21 || myHand.getScore() > 21 ) {
+          console.log("The dealer won. My score is " + myHand.getScore() + " and the dealer's score is " + dealerHand.getScore());
+          return false;
+        } else { return true; }
+        
+      }
+  
+    // the first card is dealt to both players.
+    var myHand = new Hand();
+    var dealerHand = new Hand();
+    // I get my second card
+    myHand.hit()
+    {
+      // let myTurn = true;
+      // let myScore = 0;
+      // let yourScore = 0;
+      // At the start of the game, only tell the dealers first card
+      console.log("My score is " + myHand.getScore() + " and the dealer's first card is: " + dealerHand.getScore() );
+      dealerHand.hit(); // Now give the dealer his 2nd card
+      
+      let i = 1;
+      while(checkForWinner()) {
+          //on the second time through tell both scores
+         if (i != 1) {console.log("My score is " + myHand.getScore() + " and the dealer's score is " + dealerHand.getScore() ); }
+        // Check if there was a winner
+        checkForWinner();
+        var playerResponse = prompt("Press 'h' to hit or 's' to stand.");
+        
+        if (playerResponse === 'h') {
+          myHand.hit();
+          checkForWinner();
+        }
+        dealerHand.hit();
+        checkForWinner();
+        i += 1;
         }
       }
     
     
-    }
+    
+    // document.getElementById("dummy").innerHTML = "you said " + playerResponse;
   </script>
 
 
