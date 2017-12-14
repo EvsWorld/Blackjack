@@ -9,40 +9,101 @@
 </head>
 
 <body>
-  <div id="dummy"></div>
+  
+  <style>
+        .game
+        {
+            width: 720px;
+            border: solid 1px #ddd;
+            margin: 0 auto;
+            padding: 30px;
+        }
 
+        .card{
+            width: 70px;
+            height: 100px;
+            padding: 10px;
+            border: solid 1px #808080;
+            background-color: white;
+            display: inline-block;
+            border-radius: 10px;
+            font-size: 8pt;
+            text-align: center;
+            margin: 3px;
+        }
+
+        .players{
+            float:left;
+            width: 500px;
+        }
+
+        .player{
+            width: 40%;
+            border: solid 2px #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            display: inline-block;
+            margin:1%;
+            vertical-align: top;
+        }
+
+        .player.active{
+            border: solid 2px #1caff6;
+        }
+
+        .points{
+            text-align: center;
+            font-size: 20pt;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        .deck{
+            float:right;
+            width: 200px;
+        }
+    </style>
+    
+  <div id="dummy"></div>
+  <div class="game">
+        <h1>B</h1>
+        <input type="button" class="btn" value="start" onclick="start()" />
+        <input type="button" class="btn" value="hit me" onclick="hitMe()" />
+        <input type="button" class="btn" value="stay" onclick="stay()" />
+
+        <div id="players" class="players">
+        </div>
+
+        <div id="deck" class="deck">
+            <!-- <div class="card" id="deckcount">52</div> -->
+            <div class="status" id="status"></div>
+        </div>
+
+        <div class="clear"></div>
+    </div>
 
   <script>
     "use strict";  
   
-    // Make your card constructor again here, but make sure to use private
-    // variables!
+    // card constructor again here, use private variables
     function Card(n, s) {
       var number = n;
       var suit = s;
       //getters
-      this.getNumber = function() {
-        return this.number;
-      };
-      this.getSuit = function() {
-        return this.suit;
-      };
-      this.getValue = function() {
-        if (this.number === 11 || this.number === 12 || this.number === 0) {
-          return 10;
-        } else if (this.number === 1) {
-          return 11;
-        } else {
-          return number;
-        }
-      };
+      this.getNumber = () => this.number;
+      this.getSuit = () => this.suit;
+      this.getValue = () => (
+            ([11,12,1].includes(this.number)) ? 10 // If true return 10 
+            : (this.number ===1) ? 11          // Else if number==1, return 11 
+                                 : number
+      );     // Else return number
     }
 
     // Make a deal function here.  It should return a new card with a suit
     // that is a random number from 1 to 4, and a number that is a random
     // number between 1 and 13
     var deal = function() {
-      var randNum = Math.floor(Math.random() * 13) + 1;
+      var randNum = Math.floor(Math.random() * 13) + 1; 
       var randSuit = Math.floor(Math.random() * 4) + 1;
       //the card
       return new Card(randNum, randSuit);
@@ -54,18 +115,15 @@
 
     function Hand() {
       var score = deal().getValue();
-      this.card1 = deal();
-      this.card2 = deal();
-      this.card3 = deal();
-      this.card4 = deal();
-      this.card5 = deal();
-      this.hit = function() {
-         score += deal().getValue(); 
-       };
-      this.getScore = function() {
-        return score;
-      };   
-      }
+      // this.card1 = deal();
+      // this.card2 = deal();
+      // this.card3 = deal();
+      // this.card4 = deal();
+      // this.card5 = deal();
+      this.hit = () => score += deal().getValue();
+      this.getScore = () => score;
+       
+    }
     
       
       function checkForWinner() {
