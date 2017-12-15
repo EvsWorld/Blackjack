@@ -130,6 +130,7 @@
       // getValue is being called like a method of deal b/c deal() returns (creates) an object that the contains the getValue method (This is a closure)
       var score = 0;
       var playerDeck = new Array();  // Starts each player with no cards
+      // FIlls up a "shoe" with 9 completely random hards.
       var shoe = [deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal() ]     
       // var card1 = deal();
       // var card2 = deal();
@@ -232,16 +233,15 @@
       }
       return playerResponse;
     }
-    
-    
+
     // TODO: Render Card function. Use switch statement that takes current card as argument, then was switches for all 13 possible cards, or all 52 to make sure it's totally random. But it wouldnt affect the game. 
     
-    
     function showCardsInDeck(deck) {
-      for (let card=0; card < deck.length; card++) {
+      for (let card in deck) {
         // [deck].getPlayerDeck()[card].getNumber()
-        return [deck].getPlayerDeck()[card].getNumber(); 
-        return [deck].getPlayerDeck()[card].getSuit();
+        console.log( "Number of card: " + card + " is: " + deck[card].getNumber() ); 
+        console.log( "Suit of card: " + card + " is: " + deck[card].getSuit() );
+        
          
           // [deck].getPlayerDeck()[1].getNumber(); [deck].getPlayerDeck()[1].getSuit();
       }
@@ -264,14 +264,12 @@
       dealerHand.setHit()     // The dealer gets his first card 
             
       // TODO: render my starting two cards and dealers first two cards with one face down.
-      console.log("My hand looks like this: " + showCardsInDeck(myHand) );
+     showCardsInDeck( myHand.getPlayerDeck() );
+     showCardsInDeck( dealerHand.getPlayerDeck() );
     
       // At the start of the game, only tell the dealers first card
       console.log("My starting hand score is " + myHand.getScore() + ", " + " and the dealer's first card is: " + dealerHand.getScore() );
-      
-      
-      // Check player has got blackjack or busted from the beginning
-      checkForBust( myHand.getScore(), dealerHand.getScore() );     
+          
       
       dealerHand.setHit(); // Now give the dealer his 2nd card
       
@@ -281,6 +279,9 @@
       // Should only enter this loop if user responds with 'h'.
       while (playerResponse === 'h' && myHand.getScore() != 21) {
         myHand.setHit();
+        console.log( "I just hit");
+        showCardsInDeck( myHand.getPlayerDeck() );
+        showCardsInDeck( dealerHand.getPlayerDeck() );
         console.log("My score after the hit is " + myHand.getScore() + ", " + " and the dealer's real score is: " + dealerHand.getScore() );
         //TODO: Render new card for player
         checkForBust(myHand.getScore(), dealerHand.getScore());
@@ -291,6 +292,9 @@
       if (playerResponse === 's') {
         while (dealerHand.getScore() <= 17 ) {
           dealerHand.setHit();
+          console.log("The dealer just hit");
+          showCardsInDeck( myHand.getPlayerDeck() );
+          showCardsInDeck( dealerHand.getPlayerDeck() );
           checkForBlackjackOrBust(myHand.getScore(), dealerHand.getScore());
         }
         checkWhoHasHighScore(myHand.getScore(), dealerHand.getScore());   
