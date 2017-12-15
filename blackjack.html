@@ -67,7 +67,7 @@
   <div id="dummy"></div>
   <div class="game">
         <h1>B</h1>
-        <input type="button" class="btn" value="start" onclick="start()" />
+        <input type="button" class="btn" value="start" onclick="startGame()" />
         <input type="button" class="btn" value="hit me" onclick="hitMe()" />
         <input type="button" class="btn" value="stay" onclick="stay()" />
 
@@ -84,90 +84,219 @@
 
   <script>
     "use strict";  
+
   
     // card constructor again here, use private variables
     function Card(n, s) {
       var number = n;
       var suit = s;
       //getters
-      this.getNumber = () => this.number;
-      this.getSuit = () => this.suit;
-      this.getValue = () => (
-            ([11,12,1].includes(this.number)) ? 10 // If true return 10 
-            : (this.number ===1) ? 11          // Else if number==1, return 11 
-                                 : number
-      );     // Else return number
+      this.getNumber = function() { 
+        return number;
+      };
+      this.getSuit = function() { 
+        return suit;
+      };
+      this.getValue = function() {
+        if ( number === 11 || number === 12 || number === 13 ) {
+          console.log("Card function got an 11, 12, or 13 and returned 10");
+          return 10;
+        } else if ( number === 1 ) { //TODO: Handle hard hands(how to value ace when it could cause you to bust)
+          console.log("Card function got a 1 and returned 11");
+          return 11;
+        } else {
+          return number;
+        }
+      };
+      //       ([11,12,13].includes(number)) ? 10 // If true return 10 
+      //       : (number === 1) ? 11          // Else if number==1, return 11 
+      //                            : number  // Else return number
+      // );     
     }
 
-    // Make a deal function here.  It should return a new card with a suit
-    // that is a random number from 1 to 4, and a number that is a random
-    // number between 1 and 13
-    var deal = function() {
+    // Generates two random numbers 1-13 and 1-4. return new Card object 
+    function deal() {
       var randNum = Math.floor(Math.random() * 13) + 1; 
       var randSuit = Math.floor(Math.random() * 4) + 1;
-      //the card
+      // console.log("the original random number is " + randNum);
       return new Card(randNum, randSuit);
     };
 
     // examples of the deal function in action
-    var card1 = deal();
-    var card2 = deal();
+    // var card1 = deal();
+    // var card2 = deal();
 
     function Hand() {
-      var score = deal().getValue();
-      // this.card1 = deal();
-      // this.card2 = deal();
-      // this.card3 = deal();
-      // this.card4 = deal();
-      // this.card5 = deal();
-      this.hit = () => score += deal().getValue();
-      this.getScore = () => score;
-       
+      // getValue is being called like a method of deal b/c deal() returns (creates) an object that the contains the getValue method (This is a closure)
+      var score = 0;
+      var playerDeck = new Array();  // Starts each player with no cards
+      var shoe = [deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal() ]     
+      // var card1 = deal();
+      // var card2 = deal();
+      // var card3 = deal();
+      // var card4 = deal();
+      // var card5 = deal();
+      // var card6 = deal();
+      // var card7 = deal();
+      // var card8 = deal();
+      
+      // deals random card and adds value to the hands score
+      this.setHit = function() {
+        playerDeck.push(shoe.pop());
+          // gets game value of recently pushed card (from end of playerDeck)
+          score += playerDeck[playerDeck.length-1].getValue()
+          // for (let card of playerDeck) {
+          //   score += card.getValue()
+      };
+      this.getScore = function() {
+        return score;
+      }; 
+      this.getPlayerDeck = function() {
+        return playerDeck;
+      };
+      this.getShoe = function() {
+        return shoe;
+      };  
     }
     
-      
-      function checkForWinner() {
-        if (myHand.getScore() === 21 | dealerHand.getScore() > 21) {
-          console.log( "I won. My score is " + myHand.getScore() + " and the dealer's score is " + dealerHand.getScore());
-          return false;
-        } else if ( dealerHand.getScore() === 21 || myHand.getScore() > 21 ) {
-          console.log("The dealer won. My score is " + myHand.getScore() + " and the dealer's score is " + dealerHand.getScore());
-          return false;
-        } else { return true; }
-        
+    // Hand.prototype = {
+    //   get getScore() {
+    //     return score;
+    //   }
+    // }
+          
+    function checkWhoHasHighScore(myScore, dScore) {
+      if (myScore === dScore) {
+        console.log("The game was a draw");
+        console.log("My score is " + myHand.getScore() + ", " + " and the dealer's score is: " + dealerHand.getScore() );
+        askToPlayAgain()
+      } else if (myScore > dScore) {
+        console.log("I won because I have the high score. My score is " + myScore + " and the dealer's score is " + dScore);
+        askToPlayAgain()
+      } else {
+        console.log("The dealer won because he has the high score. My score is " + myScore + " and the dealer's score is " + dScore);
+        askToPlayAgain()
       }
-  
-    // the first card is dealt to both players.
-    var myHand = new Hand();
-    var dealerHand = new Hand();
-    // I get my second card
-    myHand.hit()
-    {
-      // let myTurn = true;
-      // let myScore = 0;
-      // let yourScore = 0;
-      // At the start of the game, only tell the dealers first card
-      console.log("My score is " + myHand.getScore() + " and the dealer's first card is: " + dealerHand.getScore() );
-      dealerHand.hit(); // Now give the dealer his 2nd card
-      
-      let i = 1;
-      while(checkForWinner()) {
-          //on the second time through tell both scores
-         if (i != 1) {console.log("My score is " + myHand.getScore() + " and the dealer's score is " + dealerHand.getScore() ); }
-        // Check if there was a winner
-        checkForWinner();
-        var playerResponse = prompt("Press 'h' to hit or 's' to stand.");
+    }        
+         
+    function checkForBlackjackOrBust(myScore, dScore) {
+      if (myScore === 21 && dScore === 21) {
+        console.log("The game was a draw.")
+        console.log("My score is " + myHand.getScore() + ", " + " and the dealer's score is: " + dealerHand.getScore() );
+        askToPlayAgain();
+      } else if (myScore === 21 || dScore > 21) {
+        console.log( "I won. My score is " + myScore + " and the dealer's score is " + dScore);
+        askToPlayAgain();
         
-        if (playerResponse === 'h') {
-          myHand.hit();
-          checkForWinner();
-        }
-        dealerHand.hit();
-        checkForWinner();
-        i += 1;
-        }
-      }
+      } else if ( dScore === 21 || myScore > 21 ) {
+        console.log("The dealer won. My score is " + myScore + " and the dealer's score is " + dScore);
+        askToPlayAgain();
+        
+      } else { return true; }
+    }
+    function checkForBust(myScore, dScore) {
+      if ( dScore > 21) {
+        console.log( "I won. My score is " + myScore + " and the dealer's score is " + dScore);
+        askToPlayAgain();
+        
+      } else if ( myScore > 21 ) {
+        console.log("The dealer won. My score is " + myScore + " and the dealer's score is " + dScore);
+        askToPlayAgain();
+        
+      } else { return true; }
+    }
     
+    function askToPlayAgain() {
+      //TODO Validate response
+      var playerResponseToPlay = prompt("If you want to play again, enter 'y', if not enter 'n'.");
+      while (!(['y','n'].includes(playerResponseToPlay))) {
+         playerResponseToPlay = prompt("Not a valid response. Press 'y' to play or 'n' to stop.");
+       }
+      if (playerResponseToPlay === 'y' ) { 
+        startGame(); 
+      } else if (playerResponseToPlay === 'n' ) { 
+         playerResponseToPlay = false;
+      }
+      return playerResponseToPlay;
+      // I wanted to do this with ternaries
+      // (playerResponseToPlay === 'y') ? 
+      //   (startGame() : 
+      //   (playerResponseToPlay==='n') ? break )
+    }
+    
+    function promptUser() {
+      var playerResponse = prompt("Press 'h' to hit or 's' to stand.");
+      // Validate user response
+      while (!(['s','h'].includes(playerResponse))) {
+         playerResponse = prompt("Not a valid response. Press 'h' to hit or 's' to stand.");
+      }
+      return playerResponse;
+    }
+    
+    
+    // TODO: Render Card function. Use switch statement that takes current card as argument, then was switches for all 13 possible cards, or all 52 to make sure it's totally random. But it wouldnt affect the game. 
+    
+    
+    function showCardsInDeck(deck) {
+      for (let card=0; card < deck.length; card++) {
+        // [deck].getPlayerDeck()[card].getNumber()
+        return [deck].getPlayerDeck()[card].getNumber(); 
+        return [deck].getPlayerDeck()[card].getSuit();
+         
+          // [deck].getPlayerDeck()[1].getNumber(); [deck].getPlayerDeck()[1].getSuit();
+      }
+  }
+  
+    
+  
+    function startGame() {
+      console.log("Starting a new game!");
+      // the first card is dealt to both players.
+      // How can I avoid all these different variables that refer to the same objects? Can I use the "spread opperator?"
+      var myHand = new Hand();
+      var dealerHand = new Hand();
+      // var myHand.getScore() = myHand.getScore();
+      // var dealerHand.getScore() = dealerHand.getScore()
+      
+      myHand.setHit()     // I get my first card 
+      myHand.setHit()     // I get my second card
+      
+      dealerHand.setHit()     // The dealer gets his first card 
+            
+      // TODO: render my starting two cards and dealers first two cards with one face down.
+      console.log("My hand looks like this: " + showCardsInDeck(myHand) );
+    
+      // At the start of the game, only tell the dealers first card
+      console.log("My starting hand score is " + myHand.getScore() + ", " + " and the dealer's first card is: " + dealerHand.getScore() );
+      
+      
+      // Check player has got blackjack or busted from the beginning
+      checkForBust( myHand.getScore(), dealerHand.getScore() );     
+      
+      dealerHand.setHit(); // Now give the dealer his 2nd card
+      
+      var playerResponse = promptUser();
+      // promptUser();  // Not sure if playerResonse will be available
+      
+      // Should only enter this loop if user responds with 'h'.
+      while (playerResponse === 'h' && myHand.getScore() != 21) {
+        myHand.setHit();
+        console.log("My score after the hit is " + myHand.getScore() + ", " + " and the dealer's real score is: " + dealerHand.getScore() );
+        //TODO: Render new card for player
+        checkForBust(myHand.getScore(), dealerHand.getScore());
+        if (myHand.getScore() != 21) { 
+          playerResponse = prompt("Press 'h' to hit or 's' to stand.") 
+        };
+      }
+      if (playerResponse === 's') {
+        while (dealerHand.getScore() <= 17 ) {
+          dealerHand.setHit();
+          checkForBlackjackOrBust(myHand.getScore(), dealerHand.getScore());
+        }
+        checkWhoHasHighScore(myHand.getScore(), dealerHand.getScore());   
+        if ( playerResponseToPlay === 'n') { return;}
+      }
+    }
     
     
     // document.getElementById("dummy").innerHTML = "you said " + playerResponse;
