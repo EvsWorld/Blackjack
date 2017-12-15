@@ -68,13 +68,20 @@
   <div class="game">
         <h1>B</h1>
         <input type="button" class="btn" value="start" onclick="startGame()" />
-        <input type="button" class="btn" value="hit me" onclick="hitMe()" />
-        <input type="button" class="btn" value="stay" onclick="stay()" />
+        <!-- <input type="button" class="btn" value="hit me" onclick="hitMe()" />
+        <input type="button" class="btn" value="stay" onclick="stay()" /> -->
 
         <div id="players" class="players">
+          
         </div>
 
         <div id="deck" class="deck">
+          <h3>Player Hand</h3>
+          <div id="player-hand"></div>
+          
+          <h3>Dealer Hand</h3>
+          <div id="dealer-hand"></div>
+          
             <!-- <div class="card" id="deckcount">52</div> -->
             <div class="status" id="status"></div>
         </div>
@@ -236,12 +243,129 @@
 
     // TODO: Render Card function. Use switch statement that takes current card as argument, then was switches for all 13 possible cards, or all 52 to make sure it's totally random. But it wouldnt affect the game. 
     
-    function showCardsInDeck(deck) {
+    // accepts aplicable deck and desired target id (one for me and one for dealer). This funtion will render each players' hand each time it is called.
+    function showCardsInDeck(deck, player) {
+      // clear html for player
+      // document.getElementById(player).innerHTML = "";
+      //TODO: Make array of card images. 
+       // let imgArray = [ [aceSpades.img, aceClubs.img, aceHearts.img, aceDiamods.img], [twoSpades.img, twoClubs.img, twoHearts.img, twoDiamonds.img], [threeSpades.img, threeClubs.img, threeHearts.img, threeDiamonds.img], [fourSpades.img, fourClubs.img, fourHearts.img, fourDiamonds.img], [fiveSpades.img, fiveClubs.img, fiveHearts.img, fiveDiamonds.img], [sixSpades.img, sixClubs.img, sixHearts.img, sixDiamonds.img], [sevenSpades.img, sevenClubs.img, sevenHearts.img, sevenDiamonds.img], [eightSpades.img, eightClubs.img, eightHearts.img, eightDiamonds.img], [nineSpades.img, nineClubs.img, nineHearts.img, nineDiamonds.img], [tenSpades.img, tenClubs.img, tenHearts.img, tenDiamonds.img], [jokerSpades.img, jokerClubs.img, jokerHearts.img, jokerDiamonds.img], [queenSpades.img, queenClubs.img, queenHearts.img, queenDiamonds.img], [kingSpades.img, kingClubs.img, kingHearts.img, kingDiamonds.img] ];
+       
+       // Testing the concept of getting random pics
+       let imgArray = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
+      
       for (let card in deck) {
-        // [deck].getPlayerDeck()[card].getNumber()
+        // Example for to return random element from array
+        // var item = items[Math.floor(Math.random()*items.length)];
         console.log( "Number of card: " + card + " is: " + deck[card].getNumber() ); 
         console.log( "Suit of card: " + card + " is: " + deck[card].getSuit() );
-        
+        // let elem;
+        // switch( deck[card].getNumber() ) {
+        //   case 1:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[0];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 2:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[1];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 3:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[2];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 4:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[3];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 5:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[4];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 6:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[5];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 7:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[6];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 8:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[7];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 9:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[8];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 10:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[9];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 11:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[10];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 12:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[11];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+        //   case 13:
+        //     elem = document.createElement("img");
+        //     // elem.src = 'images/ace.jpg';
+        //     let aceArray = imgArray[12];  // array of aces
+        //     // defines as img source an ace card of random suit
+        //     elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+        //     document.getElementById(player).appendChild(elem);  
+        //     break;
+          
+        // }
          
           // [deck].getPlayerDeck()[1].getNumber(); [deck].getPlayerDeck()[1].getSuit();
       }
@@ -265,7 +389,7 @@
             
       // TODO: render my starting two cards and dealers first two cards with one face down.
      showCardsInDeck( myHand.getPlayerDeck() );
-     showCardsInDeck( dealerHand.getPlayerDeck() );
+     // showCardsInDeck( dealerHand.getPlayerDeck() );
     
       // At the start of the game, only tell the dealers first card
       console.log("My starting hand score is " + myHand.getScore() + ", " + " and the dealer's first card is: " + dealerHand.getScore() );
