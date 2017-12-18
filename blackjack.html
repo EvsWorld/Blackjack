@@ -11,57 +11,42 @@
 <body>
   
   <style>
-        .game
-        {
-            width: 720px;
-            border: solid 1px #ddd;
-            margin: 0 auto;
-            padding: 30px;
+        .hands {
+          height: 500px;   
+          background-color: green;
         }
-
-        .card{
-            width: 70px;
-            height: 100px;
-            padding: 10px;
-            border: solid 1px #808080;
-            background-color: white;
-            display: inline-block;
-            border-radius: 10px;
-            font-size: 8pt;
-            text-align: center;
-            margin: 3px;
+        #display-score {
+          border: solid 2px black;
+          height: 2em;
+          text-align: center;
+          padding: 1em 0;
         }
-
-        .players{
-            float:left;
-            width: 500px;
+        h1 {
+          text-align: center;
+          border-bottom: solid 2px red;
+          margin: 0;
+          padding: 1em 1em;
         }
-
-        .player{
-            width: 40%;
-            border: solid 2px #ccc;
-            border-radius: 10px;
-            padding: 10px;
-            display: inline-block;
-            margin:1%;
-            vertical-align: top;
+        .player-hand-div .dealer-hand-div {
+         align-self:flex-end;
         }
-
+        img {
+          margin: .5em;
+        }
+        #myhand #dealerHand {
+          display:flex;
+        }
+        .btn {
+          margin-top: 1em;
+        }
         .player.active{
             border: solid 2px #1caff6;
+        }    
+        .dealer-hand-div .player-hand-div {
+          width: 50%;
+          display: block;
         }
-
-        .points{
-            text-align: center;
-            font-size: 20pt;
-            font-weight: bold;
-            margin: 10px;
-        }
-
-        .deck{
-            float:right;
-            width: 200px;
-        }
+      
     </style>
     
   <div id="dummy"></div>
@@ -72,15 +57,19 @@
         <input id="stand-me" type="button" class="btn" value="stay" />
 
         <div id="players" class="players">
-          <div id="display-score"></div>
+          <p id="display-score"></p>
         </div>
 
-        <div id="deck" class="deck">
-          <h3>Player Hand</h3>
-          <div id="myHand"></div>
+        <div id="deck" class="hands">
+          <div class="player-hand-div">
+            <h3>Player Hand</h3>
+            <div id="myHand"></div>
+          </div>
           
-          <h3>Dealer Hand</h3>
-          <div id="dealerHand"></div>
+          <div class="dealer-hand-div">
+            <h3>Dealer Hand</h3>
+            <div id="dealerHand"></div>
+          </div>
           
             <!-- <div class="card" id="deckcount">52</div> -->
             <div class="status" id="status"></div>
@@ -131,13 +120,15 @@
 
     function Hand() {
       // getValue is being called like a method of deal b/c deal() returns (creates) an object that the contains the getValue method (This is a closure)
+      // let elem;
+      // var imgArray = [ ['s01.bmp', 'c01.bmp', 'h01.bmp', 'd01.bmp'], ['s02.bmp', 'c02.bmp', 'h02.bmp', 'd02.bmp'], ['s03.bmp', 'c03.bmp', 'h03.bmp', 'd03.bmp'], ['s04.bmp', 'c04.bmp', 'h04.bmp', 'd04.bmp'], ['s05.bmp', 'c05.bmp', 'h05.bmp', 'd05.bmp'], ['s06.bmp', 'c06.bmp', 'h06.bmp', 'd06.bmp'], ['s07.bmp', 'c07.bmp', 'h07.bmp', 'd07.bmp'], ['s08.bmp', 'c08.bmp', 'h08.bmp', 'd08.bmp'], ['s09.bmp', 'c09.bmp', 'h09.bmp', 'd09.bmp'], ['s10.bmp', 'c10.bmp', 'h10.bmp', 'd10.bmp'], ['s11.bmp', 'c11.bmp', 'h11.bmp', 'd11.bmp'], ['s12.bmp', 'c12.bmp', 'h12.bmp', 'd12.bmp'], ['s13.bmp', 'c13.bmp', 'h13.bmp', 'd13.bmp'] ];
+      // 
+      // var that = this;
       var score = 0;
       var playerDeck = new Array();  // Starts each player with no cards
       // FIlls up a "shoe" with 9 completely random hards.
       var shoe = [ deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal() ]     
-      // var card1 = deal();
-      // var card2 = deal();
-      
+        
       // deals random card and adds value to the hands score
       this.setHit = function() {
         playerDeck.push(shoe.pop());
@@ -147,6 +138,10 @@
         } else {
           score += playerDeck[playerDeck.length-1].getValue();
         }
+        // elem = document.createElement("img");
+        // // defines as img source an ace card of random suit
+        // elem.src = imgArray[ [playerDeck[playerDeck.length-1].getNumber() ][playerDeck[playerDeck.length-1].getSuit()] ];
+        // document.getElementById(toString(that)).appendChild(elem);  
       };
       this.getScore = function() {
         return score;
