@@ -124,7 +124,7 @@
     // Generates two random numbers 1-13 and 1-4. return new Card object 
     function deal() {
       var randNum = Math.floor(Math.random() * 13) + 1; 
-      var randSuit = Math.floor(Math.random() * 4) + 1;
+      var randSuit = Math.floor(Math.random() * 4);
       // console.log("the original random number is " + randNum);
       return new Card(randNum, randSuit);
     };
@@ -247,7 +247,7 @@
             // elem.src = 'images/ace.jpg';
             let aceArray = imgArray[0];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = aceArray[Math.floor(Math.random()*aceArray.length)];
+            elem.src = aceArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 2:
@@ -255,7 +255,7 @@
             // elem.src = 'images/ace.jpg';
             let twoArray = imgArray[1];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = twoArray[Math.floor(Math.random()*twoArray.length)];
+            elem.src = twoArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 3:
@@ -263,7 +263,7 @@
             // elem.src = 'images/ace.jpg';
             let threeArray = imgArray[2];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = threeArray[Math.floor(Math.random()*threeArray.length)];
+            elem.src = threeArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 4:
@@ -271,7 +271,7 @@
             // elem.src = 'images/three.jpg';
             let fourArray = imgArray[3];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = fourArray[Math.floor(Math.random()*fourArray.length)];
+            elem.src = fourArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 5:
@@ -279,7 +279,7 @@
             // elem.src = 'images/ace.jpg';
             let fiveArray = imgArray[4];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = fiveArray[Math.floor(Math.random()*fiveArray.length)];
+            elem.src = fiveArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 6:
@@ -287,7 +287,7 @@
             // elem.src = 'images/ace.jpg';
             let sixArray = imgArray[5];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = sixArray[Math.floor(Math.random()*sixArray.length)];
+            elem.src = sixArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 7:
@@ -295,7 +295,7 @@
             // elem.src = 'images/ace.jpg';
             let sevenArray = imgArray[6];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = sevenArray[Math.floor(Math.random()*sevenArray.length)];
+            elem.src = sevenArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 8:
@@ -303,7 +303,7 @@
             // elem.src = 'images/ace.jpg';
             let eightArray = imgArray[7];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = eightArray[Math.floor(Math.random()*eightArray.length)];
+            elem.src = eightArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 9:
@@ -311,7 +311,7 @@
             // elem.src = 'images/ace.jpg';
             let nineArray = imgArray[8];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = nineArray[Math.floor(Math.random()*nineArray.length)];
+            elem.src = nineArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 10:
@@ -319,7 +319,7 @@
             // elem.src = 'images/ace.jpg';
             let tenArray = imgArray[9];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = tenArray[Math.floor(Math.random()*tenArray.length)];
+            elem.src = tenArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 11:
@@ -327,7 +327,7 @@
             // elem.src = 'images/ace.jpg';
             let jokerArray = imgArray[10];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = jokerArray[Math.floor(Math.random()*jokerArray.length)];
+            elem.src = jokerArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 12:
@@ -335,7 +335,7 @@
             // elem.src = 'images/ace.jpg';
             let queenArray = imgArray[11];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = queenArray[Math.floor(Math.random()*queenArray.length)];
+            elem.src = queenArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
           case 13:
@@ -343,7 +343,7 @@
             // elem.src = 'images/ace.jpg';
             let kingArray = imgArray[12];  // array of aces
             // defines as img source an ace card of random suit
-            elem.src = kingArray[Math.floor(Math.random()*kingArray.length)];
+            elem.src = kingArray[deck[card].getSuit()];
             document.getElementById(player).appendChild(elem);  
             break;
         }
