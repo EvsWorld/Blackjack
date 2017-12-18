@@ -67,20 +67,20 @@
   <div id="dummy"></div>
   <div class="game">
         <h1>Blackjack</h1>
-        <input type="button" class="btn" value="start" onclick="startGame()" />
-        <!-- <input type="button" class="btn" value="hit me" onclick="hitMe()" />
-        <input type="button" class="btn" value="stay" onclick="stay()" /> -->
+        <input id="start-game" type="button" class="btn" value="start" />
+        <input id="hit-me" type="button" class="btn" value="hit me" />
+        <input id="stand-me" type="button" class="btn" value="stay" />
 
         <div id="players" class="players">
-          
+          <div id="display-score"></div>
         </div>
 
         <div id="deck" class="deck">
           <h3>Player Hand</h3>
-          <div id="player-hand"></div>
+          <div id="myHand"></div>
           
           <h3>Dealer Hand</h3>
-          <div id="dealer-hand"></div>
+          <div id="dealerHand"></div>
           
             <!-- <div class="card" id="deckcount">52</div> -->
             <div class="status" id="status"></div>
@@ -91,8 +91,12 @@
 
   <script>
     "use strict";  
-
+    var gameOver;
+    var myHand = new Hand();
+    var dealerHand = new Hand();
   
+    // var myHand;
+    // var dealerHand
     // card constructor again here, use private variables
     function Card(n, s) {
       var number = n;
@@ -108,17 +112,13 @@
         if ( number === 11 || number === 12 || number === 13 ) {
           console.log("Card function got an 11, 12, or 13 and returned 10");
           return 10;
-        } else if ( number === 1 ) { //TODO: Handle hard hands(how to value ace when it could cause you to bust)
-          console.log("Card function got a 1 and returned 11");
-          return 11;
         } else {
           return number;
         }
       };
-      //       ([11,12,13].includes(number)) ? 10 // If true return 10 
-      //       : (number === 1) ? 11          // Else if number==1, return 11 
-      //                            : number  // Else return number
-      // );     
+      this.setValue = function(input) {    // This is not used but is a good example of a setter with input parameter
+        number = input;
+      };
     }
 
     // Generates two random numbers 1-13 and 1-4. return new Card object 
@@ -129,32 +129,24 @@
       return new Card(randNum, randSuit);
     };
 
-    // examples of the deal function in action
-    // var card1 = deal();
-    // var card2 = deal();
-
     function Hand() {
       // getValue is being called like a method of deal b/c deal() returns (creates) an object that the contains the getValue method (This is a closure)
       var score = 0;
       var playerDeck = new Array();  // Starts each player with no cards
       // FIlls up a "shoe" with 9 completely random hards.
-      var shoe = [deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal() ]     
+      var shoe = [ deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal() ]     
       // var card1 = deal();
       // var card2 = deal();
-      // var card3 = deal();
-      // var card4 = deal();
-      // var card5 = deal();
-      // var card6 = deal();
-      // var card7 = deal();
-      // var card8 = deal();
       
       // deals random card and adds value to the hands score
       this.setHit = function() {
         playerDeck.push(shoe.pop());
-          // gets game value of recently pushed card (from end of playerDeck)
-          score += playerDeck[playerDeck.length-1].getValue()
-          // for (let card of playerDeck) {
-          //   score += card.getValue()
+        // gets game value of recently pushed card (from end of playerDeck) If card is ace and the hand is hard, the ace counts for one, otherwise the card has the value according to the getValue() method on the Card constructor.
+        if (score <= 10 && playerDeck[playerDeck.length-1].getNumber() === 1 ) { 
+          score += 11;
+        } else {
+          score += playerDeck[playerDeck.length-1].getValue();
+        }
       };
       this.getScore = function() {
         return score;
@@ -165,86 +157,75 @@
       this.getShoe = function() {
         return shoe;
       };  
+      this.setResetGame = function() { // Resets game. Refills shoe, sets score zero. empties player's hand.
+        score = 0;
+        shoe = [ deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal(), deal() ]
+        playerDeck = new Array()
+      }
     }
-    
-    // Hand.prototype = {
-    //   get getScore() {
-    //     return score;
-    //   }
-    // }
           
     function checkWhoHasHighScore(myScore, dScore) {
-      checkForBust();
-      if (myScore === dScore) {
-        console.log("The game was a draw");
-        console.log("My score is " + myHand.getScore() + ", " + " and the dealer's score is: " + dealerHand.getScore() );
-        askToPlayAgain()
-      } else if (myScore > dScore && myScore <= 21 ) {
-        console.log("I won because I have the high score. My score is " + myScore + " and the dealer's score is " + dScore);
-        askToPlayAgain()
-      } else if ( dScore > myScore && dScore <= 21 ){
-        console.log("The dealer won because he has the high score. My score is " + myScore + " and the dealer's score is " + dScore);
-        askToPlayAgain()
-      } 
+      if (!gameOver) {  
+        checkForBust(myHand.getScore(), dealerHand.getScore() );
+        if (myScore === dScore) {
+          console.log("The game was a draw");
+          console.log("My score is " + myHand.getScore() + ", " + " and the dealer's score is: " + dealerHand.getScore() );
+          document.getElementById("display-score").innerHTML = "The game was a draw";
+          endGame();
+        } else if (myScore > dScore && myScore <= 21 ) {
+          console.log("I won because I have the high score. My score is " + myScore + " and the dealer's score is " + dScore);
+          document.getElementById("display-score").innerHTML = "I won bc I have high score";
+          endGame();
+        } else if ( dScore > myScore && dScore <= 21 ){
+          console.log("The dealer won because he has the high score. My score is " + myScore + " and the dealer's score is " + dScore);
+          document.getElementById("display-score").innerHTML = "The dealer won b/c he has high score.";
+          endGame();
+        } else {
+          document.getElementById("display-score").innerHTML = "My score is myHand: " + myhand.getScore() + "The dealer's score is: " + dealerHand.getScore() ;
+        }
+        
+      }   
     }        
          
     function checkForBlackjackOrBust(myScore, dScore) {
       if (myScore === 21 && dScore === 21) {
         console.log("The game was a draw.")
         console.log("My score is " + myHand.getScore() + ", " + " and the dealer's score is: " + dealerHand.getScore() );
-        askToPlayAgain();
+        document.getElementById("display-score").innerHTML = "The game was a draw";
       } else if (myScore === 21 || dScore > 21) {
         console.log( "I won. My score is " + myScore + " and the dealer's score is " + dScore);
-        askToPlayAgain();
-        
+        document.getElementById("display-score").innerHTML = "I won. My score is " + myScore + " and the dealer's score is: " + dScore;
+        endGame();
+
       } else if ( dScore === 21 || myScore > 21 ) {
         console.log("The dealer won. My score is " + myScore + " and the dealer's score is " + dScore);
-        askToPlayAgain();
-        
-      } else { return true; }
+        document.getElementById("display-score").innerHTML = "The dealer won. My score is: " + myHand.getScore() + ". The dealer's score is: " + dealerHand.getScore();
+        endGame();
+
+      } else {
+        document.getElementById("display-score").innerHTML = "My score is myHand: " + myHand.getScore() + "The dealer's score is: " + dealerHand.getScore() ;
+      }
     }
     function checkForBust(myScore, dScore) {
       if ( dScore > 21) {
         console.log( "I won. My score is " + myScore + " and the dealer's score is " + dScore);
-        askToPlayAgain();
-        
+        document.getElementById("display-score").innerHTML = "I won bc dealer busted";
+        endGame();
       } else if ( myScore > 21 ) {
         console.log("The dealer won. My score is " + myScore + " and the dealer's score is " + dScore);
-        askToPlayAgain();
-        
-      } else { return true; }
+        document.getElementById("display-score").innerHTML = "The dealer won b/c I busted.";
+        endGame();
+      }
+    }
+    function endGame() {
+      document.getElementById("hit-me").disabled = true;
+      document.getElementById("stand-me").disabled = true;
+      gameOver = true;
     }
     
-    function askToPlayAgain() {
-      //TODO Validate response
-      var playerResponseToPlay = prompt("If you want to play again, enter 'y', if not enter 'n'.");
-      while (!(['y','n'].includes(playerResponseToPlay))) {
-         playerResponseToPlay = prompt("Not a valid response. Press 'y' to play or 'n' to stop.");
-       }
-      if (playerResponseToPlay === 'y' ) { 
-        startGame(); 
-      } else if (playerResponseToPlay === 'n' ) { 
-         playerResponseToPlay = false;
-      }
-      return playerResponseToPlay;
-      // I wanted to do this with ternaries
-      // (playerResponseToPlay === 'y') ? 
-      //   (startGame() : 
-      //   (playerResponseToPlay==='n') ? break )
-    }
-    
-    function promptUser() {
-      var playerResponse = prompt("Press 'h' to hit or 's' to stand.");
-      // Validate user response
-      while (!(['s','h'].includes(playerResponse))) {
-         playerResponse = prompt("Not a valid response. Press 'h' to hit or 's' to stand.");
-      }
-      return playerResponse;
-    }
-
     // TODO: Render Card function. Use switch statement that takes current card as argument, then was switches for all 13 possible cards, or all 52 to make sure it's totally random. But it wouldnt affect the game. 
     
-    // accepts aplicable deck and desired target id (one for me and one for dealer). This funtion will render each players' hand each time it is called.
+    // accepts aplicable deck. This funtion will render the player's hand each time it is called.
     function showCardsInDeck(deck, player) {
       // clear html for player
       document.getElementById(player).innerHTML = "";
@@ -368,60 +349,110 @@
         }
       }
   }
-    function startGame() {
+  
+    function hitMe(myHand, dealerHand) {
+      myHand.setHit();   // deal me a card
+      document.getElementById("display-score").innerHTML = "My score is: " + myHand.getScore();
+      showCardsInDeck( myHand.getPlayerDeck(), 'myHand' );  //show card
+      checkForBust(myHand.getScore(), dealerHand.getScore() );
+      // if ( dealerHand.getPlayerDeck().length == 1 ) {
+      //   checkForBust(myhand.getScore(), dealerHand.getScore() );
+      // } 
+      if ( myHand.getScore() === 21 ) {
+        document.getElementById("hit-me").disabled = true;
+        standDealer(dealerHand);
+      }
+    }
+    function standDealer(dealerHand) {
+      while (dealerHand.getScore() <= 17 ) {
+        dealerHand.setHit();
+        console.log("The dealer just hit");
+        showCardsInDeck( dealerHand.getPlayerDeck(), 'dealerHand' );
+        checkForBlackjackOrBust(myHand.getScore(), dealerHand.getScore());
+      }
+      checkWhoHasHighScore(myHand.getScore(), dealerHand.getScore()); 
+    }
+    
+    function standMe(myHand, dealerHand) {
+      standDealer(dealerHand);
+      showCardsInDeck( dealerHand.getPlayerDeck(), 'dealerHand' );
+      checkWhoHasHighScore(myHand.getScore(), dealerHand.getScore()); 
+
+    }
+  
+    // start game is just going to deal the first few cards.
+    // startGame accepts array of the two id's for player and dealer
+    function startGame(player) {
+      myHand.setResetGame();
+      dealerHand.setResetGame();
+      // var myHand = new Hand();
+      // var dealerHand = new Hand();
+      document.getElementById("hit-me").disabled = false;
+      document.getElementById("stand-me").disabled = false;
+      gameOver = false;
       console.log("Starting a new game!");
+      // Clears both hands.
+      document.getElementById(player[0]).innerHTML = "";
+      document.getElementById(player[1]).innerHTML = "";
+
       // the first card is dealt to both players.
       // How can I avoid all these different variables that refer to the same objects? Can I use the "spread opperator?"
-      var myHand = new Hand();
-      var dealerHand = new Hand();
+      // var myHand = new Hand();
+      // var dealerHand = new Hand(); 
       // var myHand.getScore() = myHand.getScore();
       // var dealerHand.getScore() = dealerHand.getScore()
       myHand.setHit()     // I get my first card 
+      showCardsInDeck( myHand.getPlayerDeck(), player[0] );  //show first card
       myHand.setHit()     // I get my second card
+      showCardsInDeck( myHand.getPlayerDeck(), player[0] ); // show 2nd card
+      document.getElementById("display-score").innerHTML = "My score is: " + myHand.getScore();
+      
       dealerHand.setHit()     // The dealer gets his first card 
-      // TODO: render my starting two cards and dealers first two cards with one face down.
-     showCardsInDeck( myHand.getPlayerDeck(), 'player-hand' );
-     showCardsInDeck( dealerHand.getPlayerDeck(), 'dealer-hand' );
+     showCardsInDeck( dealerHand.getPlayerDeck(), player[1] );
+     dealerHand.setHit(); // Now give the dealer his 2nd card
+     if ( myHand.getScore() === 21 ) {
+       document.getElementById("hit-me").disabled = true;
+       standDealer(dealerHand);
+     }
     
       // At the start of the game, only tell the dealers first card
-      console.log("My starting hand score is " + myHand.getScore() + ", " + " and the dealer's first card is: " + dealerHand.getScore() );
+      console.log("My starting hand score is " + myHand.getScore() + ", " + " and the dealer's score is: " + dealerHand.getScore() );
           
+      // var playerResponse = promptUser();
       
-      dealerHand.setHit(); // Now give the dealer his 2nd card
       
-      var playerResponse = promptUser();
-      // promptUser();  // Not sure if playerResonse will be available
       
       // Should only enter this loop if user responds with 'h'.
-      while (playerResponse === 'h' && myHand.getScore() != 21) {
-        myHand.setHit();
-        console.log( "I just hit");
-        showCardsInDeck( myHand.getPlayerDeck(), 'player-hand' );
-        showCardsInDeck( dealerHand.getPlayerDeck(), 'dealer-hand' );
-        console.log("My score after the hit is " + myHand.getScore() + ", " + " and the dealer's real score is: " + dealerHand.getScore() );
-        //TODO: Render new card for player
-        checkForBust(myHand.getScore(), dealerHand.getScore());
-        showCardsInDeck( myHand.getPlayerDeck(), 'player-hand' );
-        showCardsInDeck( dealerHand.getPlayerDeck(), 'dealer-hand' );
-        if (myHand.getScore() != 21) { 
-          playerResponse = prompt("Press 'h' to hit or 's' to stand.") 
-        };
-      }
-      if (playerResponse === 's') {
-        while (dealerHand.getScore() <= 17 ) {
-          dealerHand.setHit();
-          console.log("The dealer just hit");
-          showCardsInDeck( myHand.getPlayerDeck(), 'player-hand' );
-          showCardsInDeck( dealerHand.getPlayerDeck(), 'dealer-hand' );
-          checkForBlackjackOrBust(myHand.getScore(), dealerHand.getScore());
-        }
-        checkWhoHasHighScore(myHand.getScore(), dealerHand.getScore());   
-        if ( playerResponseToPlay === 'n') { return;}
-      }
+      // while (myHand.getScore() != 21) {
+      //   myHand.setHit();
+      //   console.log( "I just hit");
+      //   showCardsInDeck( myHand.getPlayerDeck(), player[0] ); //show new card
+      //   console.log("My score after the hit is " + myHand.getScore() + ", " + " and the dealer's real score is: " + dealerHand.getScore() );
+      //   checkForBust(myHand.getScore(), dealerHand.getScore());
+      //   if (myHand.getScore() != 21) { 
+      //     playerResponse = prompt("Press 'h' to hit or 's' to stand.") 
+      //   };
+      // }
+      // if (playerResponse === 's') {
+      //   while (dealerHand.getScore() <= 17 ) {
+      //     dealerHand.setHit();
+      //     console.log("The dealer just hit");
+      //     showCardsInDeck( myHand.getPlayerDeck(), 'myHand' );
+      //     showCardsInDeck( dealerHand.getPlayerDeck(), 'dealerHand' );
+      //     checkForBlackjackOrBust(myHand.getScore(), dealerHand.getScore());
+      //   }
+      //   checkWhoHasHighScore(myHand.getScore(), dealerHand.getScore());   
+      //   if ( playerResponseToPlay === 'n') { return;}
+      // }
     }
     
-    
-    // document.getElementById("dummy").innerHTML = "you said " + playerResponse;
+    document.getElementById("start-game").addEventListener("click", function() { startGame(['myHand','dealerHand']); 
+  });
+    // when click hit, run hitme function.
+    document.getElementById("hit-me").addEventListener("click", function() {
+      hitMe(myHand, dealerHand) });
+    document.getElementById("stand-me").addEventListener("click", function() { 
+    standMe(myHand,dealerHand) });
   </script>
 
 
